@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Greenhouse color palette */
+  --greenhouse-50: hsl(122, 39%, 97%);
+  --greenhouse-100: hsl(122, 43%, 93%);
+  --greenhouse-200: hsl(122, 45%, 85%);
+  --greenhouse-300: hsl(122, 46%, 72%);
+  --greenhouse-400: hsl(122, 45%, 55%);
+  --greenhouse-500: hsl(122, 39%, 49%);
+  --greenhouse-600: hsl(122, 46%, 40%);
+  --greenhouse-700: hsl(122, 47%, 32%);
+  --greenhouse-800: hsl(122, 42%, 26%);
+  --greenhouse-900: hsl(122, 39%, 22%);
+  
+  /* Tech blue color palette */
+  --tech-blue-50: hsl(214, 100%, 97%);
+  --tech-blue-100: hsl(214, 95%, 93%);
+  --tech-blue-200: hsl(213, 97%, 87%);
+  --tech-blue-300: hsl(212, 96%, 78%);
+  --tech-blue-400: hsl(213, 94%, 68%);
+  --tech-blue-500: hsl(217, 91%, 60%);
+  --tech-blue-600: hsl(221, 83%, 53%);
+  --tech-blue-700: hsl(224, 76%, 48%);
+  --tech-blue-800: hsl(226, 71%, 40%);
+  --tech-blue-900: hsl(224, 64%, 33%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Greenhouse colors for dark mode */
+  --greenhouse-50: hsl(122, 39%, 7%);
+  --greenhouse-100: hsl(122, 43%, 12%);
+  --greenhouse-200: hsl(122, 45%, 18%);
+  --greenhouse-300: hsl(122, 46%, 25%);
+  --greenhouse-400: hsl(122, 45%, 35%);
+  --greenhouse-500: hsl(122, 39%, 49%);
+  --greenhouse-600: hsl(122, 46%, 55%);
+  --greenhouse-700: hsl(122, 47%, 65%);
+  --greenhouse-800: hsl(122, 42%, 75%);
+  --greenhouse-900: hsl(122, 39%, 85%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-inter antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  .bg-greenhouse-50 { background-color: var(--greenhouse-50); }
+  .bg-greenhouse-100 { background-color: var(--greenhouse-100); }
+  .bg-greenhouse-200 { background-color: var(--greenhouse-200); }
+  .bg-greenhouse-300 { background-color: var(--greenhouse-300); }
+  .bg-greenhouse-400 { background-color: var(--greenhouse-400); }
+  .bg-greenhouse-500 { background-color: var(--greenhouse-500); }
+  .bg-greenhouse-600 { background-color: var(--greenhouse-600); }
+  .bg-greenhouse-700 { background-color: var(--greenhouse-700); }
+  .bg-greenhouse-800 { background-color: var(--greenhouse-800); }
+  .bg-greenhouse-900 { background-color: var(--greenhouse-900); }
+  
+  .text-greenhouse-50 { color: var(--greenhouse-50); }
+  .text-greenhouse-100 { color: var(--greenhouse-100); }
+  .text-greenhouse-200 { color: var(--greenhouse-200); }
+  .text-greenhouse-300 { color: var(--greenhouse-300); }
+  .text-greenhouse-400 { color: var(--greenhouse-400); }
+  .text-greenhouse-500 { color: var(--greenhouse-500); }
+  .text-greenhouse-600 { color: var(--greenhouse-600); }
+  .text-greenhouse-700 { color: var(--greenhouse-700); }
+  .text-greenhouse-800 { color: var(--greenhouse-800); }
+  .text-greenhouse-900 { color: var(--greenhouse-900); }
+  
+  .border-greenhouse-500 { border-color: var(--greenhouse-500); }
+  .hover\:bg-greenhouse-600:hover { background-color: var(--greenhouse-600); }
+  .hover\:text-greenhouse-700:hover { color: var(--greenhouse-700); }
+  
+  .focus\:ring-greenhouse-500:focus {
+    --tw-ring-color: var(--greenhouse-500);
+  }
+  
+  .focus\:ring-greenhouse-300:focus {
+    --tw-ring-color: var(--greenhouse-300);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground));
+}
+
+/* Animation utilities */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Chart container improvements */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: hsl(var(--border));
+}
+
+.recharts-tooltip-wrapper {
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
