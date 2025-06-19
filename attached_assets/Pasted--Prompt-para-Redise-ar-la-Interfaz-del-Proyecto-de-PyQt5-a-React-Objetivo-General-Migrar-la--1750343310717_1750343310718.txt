@@ -1,0 +1,54 @@
+# Prompt para Rediseñar la Interfaz del Proyecto (de PyQt5 a React)
+
+## Objetivo General
+
+Migrar la interfaz actual del proyecto (que utiliza Python con PyQt5) a una aplicación web moderna utilizando React. El objetivo es mantener toda la funcionalidad y el sistema de funcionamiento existente, pero presentando la interfaz completamente en React, con una experiencia de usuario mejorada y actualizada.
+
+---
+
+## Detalles del Prompt
+
+### 1. Migración de Interfaz
+
+- Elimina completamente el uso de PyQt5 y cualquier dependencia de interfaz gráfica basada en Python.
+- Desarrolla toda la interfaz de usuario (UI) usando React, aprovechando componentes funcionales, hooks y buenas prácticas de la librería.
+- Moderniza el diseño visual con estilos responsivos y atractivos (puedes usar frameworks como Material UI, Chakra UI, Tailwind o CSS puro).
+
+### 2. Conservación de Funcionalidad
+
+- Analiza toda la lógica y los flujos de trabajo que actualmente maneja la interfaz en PyQt5.
+- Replica cada funcionalidad clave (menús, formularios, paneles de información, modales, navegación, etc.) en React.
+- Asegúrate de que la interacción usuario-sistema se mantenga fluida y coherente con el original.
+
+### 3. Comunicación con el Backend
+
+- Si la lógica de negocio principal está en Python (por ejemplo, un backend Flask, FastAPI, Django, etc.), mantén la comunicación entre la nueva interfaz React y el backend por medio de API REST o WebSocket.
+- Implementa llamadas HTTP (fetch o axios) para consumir las funciones que antes se controlaban desde la UI en PyQt5.
+
+### 4. Mejoras y Actualización
+
+- Aprovecha la migración para actualizar aspectos visuales, mejorar la usabilidad y hacer la aplicación accesible desde cualquier navegador.
+- Implementa manejo de errores, validaciones y feedback visual para el usuario.
+- Si existe funcionalidad que pueda optimizarse o modernizarse en la migración, proponlo y ejecútalo.
+
+### 5. Entregables
+
+- Código fuente de la nueva interfaz React, organizado y documentado.
+- Instrucciones claras para instalar dependencias y correr la nueva interfaz.
+- Documentación sobre cómo se mantiene la compatibilidad funcional respecto a la versión original en PyQt5.
+
+---
+
+## Resumen de lo que debe incluir el desarrollo
+
+- [ ] Interfaz de usuario completamente en React.
+- [ ] Funcionalidad igual o superior a la versión en PyQt5.
+- [ ] Conexión al backend Python existente mediante API.
+- [ ] Diseño moderno, responsivo y atractivo.
+- [ ] Código limpio, modular y documentado.
+
+---
+
+### Nota
+
+Si existen dudas sobre el flujo o detalles específicos de la interfaz original en PyQt5, consultar documentación existente o revisar el código fuente del proyecto original para asegurar la migración fiel de toda la funcionalidad.
