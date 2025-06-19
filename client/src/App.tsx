@@ -4,12 +4,28 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
+import Temperature from "@/pages/temperature";
+import Humidity from "@/pages/humidity";
+import Lighting from "@/pages/lighting";
+import Irrigation from "@/pages/irrigation";
+import Ventilation from "@/pages/ventilation";
+import Configuration from "@/pages/configuration";
+import Alerts from "@/pages/alerts";
+import History from "@/pages/history";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/temperature" component={Temperature} />
+      <Route path="/humidity" component={Humidity} />
+      <Route path="/lighting" component={Lighting} />
+      <Route path="/irrigation" component={Irrigation} />
+      <Route path="/ventilation" component={Ventilation} />
+      <Route path="/config" component={Configuration} />
+      <Route path="/alerts" component={Alerts} />
+      <Route path="/history" component={History} />
       <Route component={NotFound} />
     </Switch>
   );

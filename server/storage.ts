@@ -217,8 +217,12 @@ export class MemStorage implements IStorage {
   }
 
   async updateSystemControls(controls: InsertSystemControls): Promise<SystemControls> {
+    const existing = this.systemControlsStore.get(1);
+    if (!existing) {
+      throw new Error('System controls not found');
+    }
     const updated: SystemControls = {
-      id: 1,
+      ...existing,
       ...controls,
       lastUpdated: new Date(),
     };
@@ -234,8 +238,13 @@ export class MemStorage implements IStorage {
   async createIrrigationSchedule(schedule: InsertIrrigationSchedule): Promise<IrrigationSchedule> {
     const id = this.currentId++;
     const newSchedule: IrrigationSchedule = {
-      ...schedule,
       id,
+      name: schedule.name,
+      time: schedule.time,
+      duration: schedule.duration,
+      isActive: schedule.isActive ?? true,
+      isAutomatic: schedule.isAutomatic ?? false,
+      conditions: schedule.conditions ?? null,
       createdAt: new Date(),
     };
     this.irrigationSchedulesStore.set(id, newSchedule);
@@ -267,8 +276,11 @@ export class MemStorage implements IStorage {
   async createSystemAlert(alert: InsertSystemAlert): Promise<SystemAlert> {
     const id = this.currentId++;
     const newAlert: SystemAlert = {
-      ...alert,
       id,
+      title: alert.title,
+      message: alert.message,
+      type: alert.type,
+      isRead: alert.isRead ?? false,
       createdAt: new Date(),
     };
     this.systemAlertsStore.set(id, newAlert);
@@ -296,8 +308,10 @@ export class MemStorage implements IStorage {
   async addSystemActivity(activity: InsertSystemActivity): Promise<SystemActivity> {
     const id = this.currentId++;
     const newActivity: SystemActivity = {
-      ...activity,
       id,
+      description: activity.description,
+      details: activity.details ?? null,
+      icon: activity.icon,
       createdAt: new Date(),
     };
     this.systemActivityStore.set(id, newActivity);

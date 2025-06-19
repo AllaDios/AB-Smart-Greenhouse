@@ -114,8 +114,14 @@ The system uses PostgreSQL with the following main tables:
 ## Changelog
 
 Changelog:
-- June 19, 2025. Initial setup
+- June 19, 2025. Initial setup with basic greenhouse monitoring system
+- June 19, 2025. Migrated from PyQt5 to React web interface
+- June 19, 2025. Added comprehensive page system with individual monitoring pages
+- June 19, 2025. Implemented detailed temperature, humidity, lighting, irrigation, ventilation, alerts, history, and configuration pages
+- June 19, 2025. Fixed CSS import order issues and TypeScript type safety improvements
+- June 19, 2025. Enhanced navigation system with complete routing for all greenhouse subsystems
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Project Focus: Complete migration from PyQt5 to React web interface while maintaining all original functionality.
