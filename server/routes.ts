@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
+import ArduinoSerialReader from "./arduino-serial";
 import {
   insertSensorDataSchema,
   insertSystemControlsSchema,
@@ -19,9 +20,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Store connected clients
   const clients = new Set<WebSocket>();
 
+  // Initialize Arduino Serial Reader
+  let arduinoReader: ArduinoSerialReader | null = null;
+  let isArduinoConnected = false;
+
+  // Attempt to connect to Arduino
+  try {
+    const availablePorts = await ArduinoSerialReader.findArduinoPorts();
+    console.log('[Arduino] Available ports:', availablePorts);
+    
+    if (availablePorts.length > 0) {
+      arduinoReader = new ArduinoSerialReader(availablePorts[0]);
+      await arduinoReader.connect();
+      isArduinoConnected = true;
+      
+      // Setup callback for Arduino data
+      arduinoReader.onData((data) => {
+        console.log('[Arduino] Broadcasting data to WebSocket clients:', data);
+        broadcast({ type: 'arduino-data', data });
+      });
+      
+      console.log('[Arduino] Connected successfully, using real sensor data');
+    } else {
+      console.log('[Arduino] No Arduino ports found, using simulated data');
+    }
+  } catch (error) {
+    console.error('[Arduino] Failed to connect:', error);
+    console.log('[Arduino] Continuing with simulated data');
+  }
+
   wss.on('connection', (ws) => {
     clients.add(ws);
     console.log('Client connected to WebSocket');
+    
+    // Send Arduino status to new client
+    ws.send(JSON.stringify({ 
+      type: 'arduino-status', 
+      connected: isArduinoConnected 
+    }));
 
     ws.on('close', () => {
       clients.delete(ws);
@@ -350,17 +386,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
-  // Simulate sensor data updates every 30 seconds
-  setInterval(async () => {
-    const latest = await storage.getLatestSensorData();
-    if (latest) {
-      // Generate new sensor data with slight variations
-      const newData = {
-        temperature: latest.temperature + (Math.random() - 0.5) * 2,
-        humidity: Math.max(0, Math.min(100, latest.humidity + (Math.random() - 0.5) * 5)),
-        lightLevel: Math.max(0, latest.lightLevel + (Math.random() - 0.5) * 100),
-        soilMoisture: Math.max(0, Math.min(100, latest.soilMoisture + (Math.random() - 0.5) * 3)),
-      };
+  // Arduino status endpoint
+  app.get("/api/arduino/status", (req, res) => {
+    res.json({
+      connected: isArduinoConnected,
+      lastUpdate: new Date().toISOString()
+    });
+  });
+
+  // Manual pump control endpoint
+  app.post("/api/arduino/pump", async (req, res) => {
+    try {
+      const { state } = req.body;
+      
+      if (!isArduinoConnected || !arduinoReader) {
+        return res.status(503).json({ error: 'Arduino no conectado' });
+      }
+
+      await arduinoReader.controlPump(Boolean(state));
+      
+      await storage.addSystemActivity({
+        description: `Bomba ${state ? 'activada' : 'desactivada'} manualmente`,
+        type: "user",
+        details: `Comando enviado directamente al Arduino`
+      });
+
+      res.json({ success: true, pumpState: Boolean(state) });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Simulate sensor data only if Arduino is not connected
+  if (!isArduinoConnected) {
+    console.log('[System] Arduino not connected, starting data simulation...');
+    setInterval(async () => {
+      const latest = await storage.getLatestSensorData();
+      if (latest) {
+        // Generate new sensor data with slight variations
+        const newData = {
+          temperature: latest.temperature + (Math.random() - 0.5) * 2,
+          humidity: Math.max(0, Math.min(100, latest.humidity + (Math.random() - 0.5) * 5)),
+          lightLevel: Math.max(0, latest.lightLevel + (Math.random() - 0.5) * 100),
+          soilMoisture: Math.max(0, Math.min(100, latest.soilMoisture + (Math.random() - 0.5) * 3)),
+        };
       
       const sensorData = await storage.insertSensorData(newData);
       broadcast({ type: 'sensor-data', data: sensorData });
@@ -395,9 +464,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      await checkAndCreateAlerts(sensorData);
-    }
-  }, 30000);
+        await checkAndCreateAlerts(sensorData);
+      }
+    }, 30000);
+  } else {
+    console.log('[System] Arduino connected, using real sensor data');
+  }
 
   return httpServer;
 }

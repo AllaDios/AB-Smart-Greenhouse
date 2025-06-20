@@ -6,6 +6,7 @@ import { ControlPanel } from "@/components/control-panel";
 import { IrrigationSchedule } from "@/components/irrigation-schedule";
 import { SystemAlerts } from "@/components/system-alerts";
 import { RecentActivity } from "@/components/recent-activity";
+import { ArduinoStatus } from "@/components/arduino-status";
 import { QuickActions } from "@/components/quick-actions";
 import { useQuery } from "@tanstack/react-query";
 import { useWebSocket } from "@/hooks/use-websocket";
@@ -123,6 +124,7 @@ export default function Dashboard() {
             </div>
             
             <div className="space-y-6">
+              <ArduinoStatus />
               <ControlPanel />
               <SystemAlerts />
               <QuickActions />

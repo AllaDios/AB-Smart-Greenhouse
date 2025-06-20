@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
@@ -7,6 +7,7 @@ export function useWebSocket() {
   const { toast } = useToast();
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [lastMessage, setLastMessage] = useState<MessageEvent | null>(null);
 
   useEffect(() => {
     const connect = () => {
@@ -26,6 +27,8 @@ export function useWebSocket() {
         };
 
         wsRef.current.onmessage = (event) => {
+          setLastMessage(event);
+          
           try {
             const data = JSON.parse(event.data);
             
@@ -62,6 +65,11 @@ export function useWebSocket() {
               case 'emergency-stop':
                 queryClient.setQueryData(['/api/system-controls'], data.data);
                 queryClient.invalidateQueries({ queryKey: ['/api/system-activity'] });
+                break;
+                
+              case 'arduino-status':
+              case 'arduino-data':
+                // These are handled by individual components
                 break;
                 
               default:
@@ -105,5 +113,8 @@ export function useWebSocket() {
     };
   }, [queryClient, toast]);
 
-  return wsRef.current;
+  return {
+    socket: wsRef.current,
+    lastMessage
+  };
 }

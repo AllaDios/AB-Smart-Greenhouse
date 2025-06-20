@@ -111,9 +111,36 @@ The system uses PostgreSQL with the following main tables:
 - `DATABASE_URL`: PostgreSQL connection string
 - Port configuration: 5000 (development), 80 (production)
 
+## Arduino Integration
+
+The system now supports real Arduino sensor data integration:
+
+### Arduino Serial Communication
+- **SerialPort Integration**: Node.js serial communication with Arduino
+- **Automatic Detection**: System detects available Arduino ports automatically
+- **Real-time Data**: Live sensor readings replace simulated data when Arduino is connected
+- **Pump Control**: Direct hardware control of water pump via Arduino relay
+- **Fallback Mode**: Continues with simulated data if Arduino disconnects
+
+### Supported Data Formats
+- JSON format: `{"soil":45,"light":850,"water":75,"pump":1}`
+- Text format: `SOIL:45,LIGHT:850,WATER:75,PUMP:1`
+- Optional sensors: temperature and humidity can be included
+
+### Hardware Integration
+- **Soil Moisture**: Capacitive or resistive sensor (0-100%)
+- **Light Level**: LDR or digital sensor (0-1000 lux)
+- **Water Level**: Ultrasonic or float sensor (0-100%)
+- **Pump Control**: Relay-controlled water pump/solenoid
+- **Status Indicators**: Connection status shown in dashboard
+
 ## Changelog
 
 Changelog:
+- June 20, 2025. Implemented complete Arduino serial integration with automatic port detection
+- June 20, 2025. Added real-time sensor data processing and WebSocket broadcasting
+- June 20, 2025. Created Arduino status component showing connection state and manual pump controls
+- June 20, 2025. Built comprehensive Arduino integration guide with hardware setup and code examples
 - June 19, 2025. Initial setup with basic greenhouse monitoring system
 - June 19, 2025. Migrated from PyQt5 to React web interface
 - June 19, 2025. Added comprehensive page system with individual monitoring pages
