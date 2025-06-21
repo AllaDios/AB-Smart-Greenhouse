@@ -1,6 +1,6 @@
-import { SerialPort } from 'serialport';
-import { ReadlineParser } from '@serialport/parser-readline';
-import { storage } from './storage.js';
+import { SerialPort } from "serialport";
+import { ReadlineParser } from "@serialport/parser-readline";
+import { storage } from "./storage.js";
 
 export interface ArduinoSensorData {
   soilMoisture: number;
@@ -18,19 +18,24 @@ class ArduinoSerialReader {
   private reconnectInterval: NodeJS.Timeout | null = null;
   private onDataCallback: ((data: ArduinoSensorData) => void) | null = null;
 
-  constructor(private portPath: string = '/dev/ttyUSB0', private baudRate: number = 9600) {}
+  constructor(
+    private portPath: string = "/dev/ttyUSB0",
+    private baudRate: number = 9600,
+  ) {}
 
   async connect(): Promise<void> {
     try {
-      console.log(`[Arduino] Attempting to connect to ${this.portPath} at ${this.baudRate} baud...`);
-      
+      console.log(
+        `[Arduino] Attempting to connect to ${this.portPath} at ${this.baudRate} baud...`,
+      );
+
       this.port = new SerialPort({
         path: this.portPath,
         baudRate: this.baudRate,
-        autoOpen: false
+        autoOpen: false,
       });
 
-      this.parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
+      this.parser = this.port.pipe(new ReadlineParser({ delimiter: "\n" }));
 
       await new Promise<void>((resolve, reject) => {
         this.port!.open((err) => {
@@ -47,9 +52,8 @@ class ArduinoSerialReader {
 
       this.setupDataListener();
       this.setupErrorHandlers();
-
     } catch (error) {
-      console.error('[Arduino] Connection failed:', error);
+      console.error("[Arduino] Connection failed:", error);
       this.scheduleReconnect();
       throw error;
     }
@@ -58,15 +62,15 @@ class ArduinoSerialReader {
   private setupDataListener(): void {
     if (!this.parser) return;
 
-    this.parser.on('data', (line: string) => {
+    this.parser.on("data", (line: string) => {
       try {
         const data = this.parseArduinoData(line.trim());
         if (data) {
-          console.log('[Arduino] Received data:', data);
+          console.log("[Arduino] Received data:", data);
           this.handleSensorData(data);
         }
       } catch (error) {
-        console.error('[Arduino] Error parsing data:', error, 'Raw:', line);
+        console.error("[Arduino] Error parsing data:", error, "Raw:", line);
       }
     });
   }
@@ -74,14 +78,14 @@ class ArduinoSerialReader {
   private setupErrorHandlers(): void {
     if (!this.port) return;
 
-    this.port.on('error', (err) => {
-      console.error('[Arduino] Port error:', err);
+    this.port.on("error", (err) => {
+      console.error("[Arduino] Port error:", err);
       this.isConnected = false;
       this.scheduleReconnect();
     });
 
-    this.port.on('close', () => {
-      console.log('[Arduino] Port closed');
+    this.port.on("close", () => {
+      console.log("[Arduino] Port closed");
       this.isConnected = false;
       this.scheduleReconnect();
     });
@@ -91,8 +95,8 @@ class ArduinoSerialReader {
     try {
       // Formato esperado del Arduino: "SOIL:45,LIGHT:850,WATER:75,PUMP:1"
       // O formato JSON: {"soil":45,"light":850,"water":75,"pump":1}
-      
-      if (line.startsWith('{')) {
+
+      if (line.startsWith("{")) {
         // Formato JSON
         const jsonData = JSON.parse(line);
         return {
@@ -101,54 +105,59 @@ class ArduinoSerialReader {
           waterLevel: jsonData.water || jsonData.waterLevel || 0,
           pumpStatus: Boolean(jsonData.pump || jsonData.pumpStatus),
           temperature: jsonData.temp || jsonData.temperature,
-          humidity: jsonData.humid || jsonData.humidity
+          humidity: jsonData.humid || jsonData.humidity,
         };
       } else {
         // Formato de texto simple
-        const parts = line.split(',');
+        const parts = line.split(",");
         const data: Partial<ArduinoSensorData> = {};
-        
-        parts.forEach(part => {
-          const [key, value] = part.split(':');
+
+        parts.forEach((part) => {
+          const [key, value] = part.split(":");
           if (key && value !== undefined) {
             switch (key.toUpperCase()) {
-              case 'SOIL':
-              case 'SOILMOISTURE':
+              case "SOIL":
+              case "SOILMOISTURE":
                 data.soilMoisture = parseFloat(value);
                 break;
-              case 'LIGHT':
-              case 'LIGHTLEVEL':
+              case "LIGHT":
+              case "LIGHTLEVEL":
                 data.lightLevel = parseFloat(value);
                 break;
-              case 'WATER':
-              case 'WATERLEVEL':
+              case "WATER":
+              case "WATERLEVEL":
                 data.waterLevel = parseFloat(value);
                 break;
-              case 'PUMP':
-              case 'PUMPSTATUS':
-                data.pumpStatus = value === '1' || value.toLowerCase() === 'true';
+              case "PUMP":
+              case "PUMPSTATUS":
+                data.pumpStatus =
+                  value === "1" || value.toLowerCase() === "true";
                 break;
-              case 'TEMP':
-              case 'TEMPERATURE':
+              case "TEMP":
+              case "TEMPERATURE":
                 data.temperature = parseFloat(value);
                 break;
-              case 'HUMID':
-              case 'HUMIDITY':
+              case "HUMID":
+              case "HUMIDITY":
                 data.humidity = parseFloat(value);
                 break;
             }
           }
         });
 
-        if (data.soilMoisture !== undefined && data.lightLevel !== undefined && 
-            data.waterLevel !== undefined && data.pumpStatus !== undefined) {
+        if (
+          data.soilMoisture !== undefined &&
+          data.lightLevel !== undefined &&
+          data.waterLevel !== undefined &&
+          data.pumpStatus !== undefined
+        ) {
           return data as ArduinoSensorData;
         }
       }
     } catch (error) {
-      console.error('[Arduino] Parse error:', error);
+      console.error("[Arduino] Parse error:", error);
     }
-    
+
     return null;
   }
 
@@ -160,7 +169,7 @@ class ArduinoSerialReader {
         humidity: data.humidity || 60 + Math.random() * 20, // Fallback si no hay sensor de humedad
         lightLevel: data.lightLevel,
         soilMoisture: data.soilMoisture,
-        waterLevel: data.waterLevel
+        waterLevel: data.waterLevel,
       });
 
       // Actualizar estado de la bomba en los controles del sistema
@@ -170,16 +179,16 @@ class ArduinoSerialReader {
           irrigation: data.pumpStatus,
           ventilation: currentControls.ventilation,
           lighting: currentControls.lighting,
-          heating: currentControls.heating
+          heating: currentControls.heating,
         });
       }
 
       // Registrar actividad del sistema
       if (data.pumpStatus) {
         await storage.addSystemActivity({
-          description: `Bomba de agua ${data.pumpStatus ? 'activada' : 'desactivada'} automáticamente`,
-          type: 'system',
-          details: `Humedad del suelo: ${data.soilMoisture}%`
+          description: `Bomba de agua ${data.pumpStatus ? "activada" : "desactivada"} automáticamente`,
+          type: "system",
+          details: `Humedad del suelo: ${data.soilMoisture}%`,
         });
       }
 
@@ -187,9 +196,8 @@ class ArduinoSerialReader {
       if (this.onDataCallback) {
         this.onDataCallback(data);
       }
-
     } catch (error) {
-      console.error('[Arduino] Error handling sensor data:', error);
+      console.error("[Arduino] Error handling sensor data:", error);
     }
   }
 
@@ -200,7 +208,7 @@ class ArduinoSerialReader {
 
     this.reconnectInterval = setTimeout(() => {
       if (!this.isConnected) {
-        console.log('[Arduino] Attempting to reconnect...');
+        console.log("[Arduino] Attempting to reconnect...");
         this.connect().catch(() => {
           // Error ya logueado en connect()
         });
@@ -214,11 +222,11 @@ class ArduinoSerialReader {
 
   async sendCommand(command: string): Promise<void> {
     if (!this.port || !this.isConnected) {
-      throw new Error('Arduino not connected');
+      throw new Error("Arduino not connected");
     }
 
     return new Promise((resolve, reject) => {
-      this.port!.write(command + '\n', (err) => {
+      this.port!.write(command + "\n", (err) => {
         if (err) {
           reject(err);
         } else {
@@ -230,7 +238,7 @@ class ArduinoSerialReader {
   }
 
   async controlPump(state: boolean): Promise<void> {
-    const command = state ? 'PUMP_ON' : 'PUMP_OFF';
+    const command = state ? "PUMP_ON" : "PUMP_OFF";
     await this.sendCommand(command);
   }
 
@@ -248,7 +256,7 @@ class ArduinoSerialReader {
       await new Promise<void>((resolve) => {
         this.port!.close(() => {
           this.isConnected = false;
-          console.log('[Arduino] Disconnected');
+          console.log("[Arduino] Disconnected");
           resolve();
         });
       });
@@ -258,21 +266,23 @@ class ArduinoSerialReader {
   // Método para detectar automáticamente puertos disponibles
   static async findArduinoPorts(): Promise<string[]> {
     try {
-      const { SerialPort } = await import('serialport');
+      const { SerialPort } = await import("serialport");
       const ports = await SerialPort.list();
-      
+
       // Filtrar puertos que probablemente sean Arduino
-      const arduinoPorts = ports.filter(port => 
-        port.manufacturer?.toLowerCase().includes('arduino') ||
-        port.manufacturer?.toLowerCase().includes('ch340') ||
-        port.manufacturer?.toLowerCase().includes('ftdi') ||
-        port.path.includes('ttyUSB') ||
-        port.path.includes('ttyACM')
+      const arduinoPorts = ports.filter(
+        (port) =>
+          (port.manufacturer && port.manufacturer.toLowerCase().includes("arduino")) ||
+          (port.manufacturer && port.manufacturer.toLowerCase().includes("ch340")) ||
+          (port.manufacturer && port.manufacturer.toLowerCase().includes("ftdi")) ||
+          (port.friendlyName && port.friendlyName.toLowerCase().includes("usb-serial ch340")) ||
+          port.path.includes("ttyUSB") ||
+          port.path.includes("ttyACM")
       );
 
-      return arduinoPorts.map(port => port.path);
+      return arduinoPorts.map((port) => port.path);
     } catch (error) {
-      console.error('[Arduino] Error listing ports:', error);
+      console.error("[Arduino] Error listing ports:", error);
       return [];
     }
   }
