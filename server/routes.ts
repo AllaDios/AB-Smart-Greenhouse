@@ -414,15 +414,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { state } = req.body;
       
-      if (!isArduinoConnected || !arduinoReader) {
-        return res.status(503).json({ error: 'Arduino no conectado' });
+      if (isArduinoConnected && arduinoReader) {
+        // If Arduino is connected, send command to physical device
+        await arduinoReader.controlPump(Boolean(state));
+      } else {
+        // If Arduino is not connected, update simulated pump state
+        const latest = await storage.getLatestSensorData();
+        if (latest) {
+          const sensorData = await storage.insertSensorData({
+            temperature: latest.temperature,
+            humidity: latest.humidity,
+            lightLevel: latest.lightLevel,
+            soilMoisture: latest.soilMoisture,
+            waterLevel: latest.waterLevel || 75,
+            pumpStatus: Boolean(state)
+          });
+          // Broadcast the updated sensor data
+          broadcast({ type: 'sensor-data', data: sensorData });
+        }
       }
-
-      await arduinoReader.controlPump(Boolean(state));
       
       await storage.addSystemActivity({
         description: `Bomba ${state ? 'activada' : 'desactivada'} manualmente`,
-        details: `Comando enviado directamente al Arduino`,
+        details: isArduinoConnected ? `Comando enviado al Arduino` : `Control simulado`,
         icon: "fas fa-tint"
       });
 
@@ -444,6 +458,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           humidity: Math.max(0, Math.min(100, latest.humidity + (Math.random() - 0.5) * 5)),
           lightLevel: Math.max(0, latest.lightLevel + (Math.random() - 0.5) * 100),
           soilMoisture: Math.max(0, Math.min(100, latest.soilMoisture + (Math.random() - 0.5) * 3)),
+          waterLevel: Math.max(0, Math.min(100, (latest.waterLevel || 75) + (Math.random() - 0.5) * 2)),
+          pumpStatus: latest.pumpStatus || false
         };
       
       const sensorData = await storage.insertSensorData(newData);

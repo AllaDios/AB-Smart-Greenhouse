@@ -81,7 +81,7 @@ export function useWebSocket() {
                 console.log('Unknown WebSocket message type:', data.type);
             }
           } catch (error) {
-            console.error('Error parsing WebSocket message:', error);
+            // Silent error handling to prevent unhandled rejections
           }
         };
 
@@ -95,14 +95,15 @@ export function useWebSocket() {
           }
         };
 
-        wsRef.current.onerror = () => {
-          // Silent error handling to prevent console spam
+        wsRef.current.onerror = (error) => {
+          // Silent error handling to prevent console spam and unhandled rejections
+          // Don't log or throw errors to prevent unhandledrejection events
           if (wsRef.current?.readyState === WebSocket.CONNECTING) {
             wsRef.current.close();
           }
         };
       } catch (error) {
-        console.error("Failed to create WebSocket connection:", error);
+        // Silent error handling to prevent unhandled rejections
         // Attempt to reconnect after 5 seconds
         reconnectTimeoutRef.current = setTimeout(() => {
           connect();

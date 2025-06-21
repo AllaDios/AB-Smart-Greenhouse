@@ -26,11 +26,13 @@ export function ArduinoStatus() {
   // Mutation para controlar la bomba manualmente
   const pumpControlMutation = useMutation({
     mutationFn: async (state: boolean) => {
-      return apiRequest(`/api/arduino/pump`, {
+      const response = await fetch(`/api/arduino/pump`, {
         method: 'POST',
         body: JSON.stringify({ state }),
         headers: { 'Content-Type': 'application/json' }
       });
+      if (!response.ok) throw new Error('Failed to control pump');
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/system-controls'] });
@@ -124,40 +126,38 @@ export function ArduinoStatus() {
           </span>
         </div>
 
-        {isConnected && (
-          <div className="pt-2 border-t">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Control Bomba</span>
-              <Zap className="h-4 w-4 text-blue-500" />
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handlePumpControl(true)}
-                disabled={pumpControlMutation.isPending}
-                className="flex-1"
-              >
-                {pumpControlMutation.isPending ? (
-                  <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-                ) : null}
-                Activar
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handlePumpControl(false)}
-                disabled={pumpControlMutation.isPending}
-                className="flex-1"
-              >
-                {pumpControlMutation.isPending ? (
-                  <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-                ) : null}
-                Desactivar
-              </Button>
-            </div>
+        <div className="pt-2 border-t">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Control Bomba</span>
+            <Zap className="h-4 w-4 text-blue-500" />
           </div>
-        )}
+          <div className="flex space-x-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handlePumpControl(true)}
+              disabled={pumpControlMutation.isPending}
+              className="flex-1"
+            >
+              {pumpControlMutation.isPending ? (
+                <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+              ) : null}
+              Activar
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handlePumpControl(false)}
+              disabled={pumpControlMutation.isPending}
+              className="flex-1"
+            >
+              {pumpControlMutation.isPending ? (
+                <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+              ) : null}
+              Desactivar
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
