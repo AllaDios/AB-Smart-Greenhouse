@@ -90,10 +90,10 @@ export class MemStorage implements IStorage {
       const timestamp = new Date(now.getTime() - (23 - i) * 60 * 60 * 1000);
       const sensorReading: SensorData = {
         id: this.currentId++,
-        temperature: 20 + Math.random() * 8,
-        humidity: 60 + Math.random() * 20,
-        lightLevel: i > 6 && i < 19 ? 400 + Math.random() * 600 : Math.random() * 100,
-        soilMoisture: 40 + Math.random() * 30,
+        temperature: Math.round((20 + Math.random() * 8) * 10) / 10,
+        humidity: Math.round(60 + Math.random() * 20),
+        lightLevel: Math.round(i > 6 && i < 19 ? 400 + Math.random() * 600 : Math.random() * 100),
+        soilMoisture: Math.round(40 + Math.random() * 30),
         timestamp,
       };
       this.sensorDataStore.set(sensorReading.id, sensorReading);
@@ -204,8 +204,11 @@ export class MemStorage implements IStorage {
   async insertSensorData(data: InsertSensorData): Promise<SensorData> {
     const id = this.currentId++;
     const sensorReading: SensorData = {
-      ...data,
       id,
+      temperature: Math.round(data.temperature * 10) / 10,
+      humidity: Math.round(data.humidity),
+      lightLevel: Math.round(data.lightLevel),
+      soilMoisture: Math.round(data.soilMoisture),
       timestamp: new Date(),
     };
     this.sensorDataStore.set(id, sensorReading);
