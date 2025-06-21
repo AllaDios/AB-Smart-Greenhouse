@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import ArduinoSerialReader from "./arduino-serial";
+import { weatherService } from "./weather-api";
 import {
   insertSensorDataSchema,
   insertSystemControlsSchema,
@@ -386,6 +387,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
+  // Weather data endpoint
+  app.get('/api/weather', async (req, res) => {
+    try {
+      const { lat, lon } = req.query;
+      const latitude = lat ? parseFloat(lat as string) : -34.6118; // Buenos Aires por defecto
+      const longitude = lon ? parseFloat(lon as string) : -58.3960;
+      
+      const weatherData = await weatherService.getWeatherData(latitude, longitude);
+      res.json(weatherData);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch weather data' });
+    }
+  });
+
   // Arduino status endpoint
   app.get("/api/arduino/status", (req, res) => {
     res.json({
@@ -407,8 +422,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.addSystemActivity({
         description: `Bomba ${state ? 'activada' : 'desactivada'} manualmente`,
-        type: "user",
-        details: `Comando enviado directamente al Arduino`
+        details: `Comando enviado directamente al Arduino`,
+        icon: "fas fa-tint"
       });
 
       res.json({ success: true, pumpState: Boolean(state) });
