@@ -13,7 +13,7 @@ export class WeatherService {
   private cachedData: WeatherData | null = null;
   private cacheTimeout = 10 * 60 * 1000; // 10 minutos
 
-  async getWeatherData(latitude: number = -34.6118, longitude: number = -58.3960): Promise<WeatherData> {
+  async getWeatherData(latitude: number = -31.4201, longitude: number = -64.1888): Promise<WeatherData> {
     // Usar cache si es reciente
     if (this.cachedData && this.lastFetch && 
         Date.now() - this.lastFetch.getTime() < this.cacheTimeout) {
@@ -35,7 +35,7 @@ export class WeatherService {
         humidity: Math.round(data.current.relative_humidity_2m),
         windSpeed: Math.round(data.current.wind_speed_10m * 10) / 10,
         weatherCode: data.current.weather_code,
-        location: "Buenos Aires", // Puedes hacerlo dinámico más tarde
+        location: "Córdoba", // Puedes hacerlo dinámico más tarde
         timestamp: new Date()
       };
 
@@ -54,7 +54,7 @@ export class WeatherService {
         humidity: 60,
         windSpeed: 5.0,
         weatherCode: 0,
-        location: "Buenos Aires",
+        location: "Córdoba",
         timestamp: new Date()
       };
     }
