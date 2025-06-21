@@ -7,6 +7,7 @@ export interface ArduinoSensorData {
   lightLevel: number;
   waterLevel: number;
   pumpStatus: boolean;
+  emergencyMode?: boolean;
   temperature?: number;
   humidity?: number;
 }
@@ -19,7 +20,7 @@ class ArduinoSerialReader {
   private onDataCallback: ((data: ArduinoSensorData) => void) | null = null;
 
   constructor(
-    private portPath: string = "/dev/ttyUSB0",
+    private portPath: string = "COM5",
     private baudRate: number = 9600,
   ) {}
 
@@ -104,6 +105,7 @@ class ArduinoSerialReader {
           lightLevel: jsonData.light || jsonData.lightLevel || 0,
           waterLevel: jsonData.water || jsonData.waterLevel || 0,
           pumpStatus: Boolean(jsonData.pump || jsonData.pumpStatus),
+          emergencyMode: Boolean(jsonData.emergency || jsonData.emergencyMode),
           temperature: jsonData.temp || jsonData.temperature,
           humidity: jsonData.humid || jsonData.humidity,
         };
@@ -133,6 +135,11 @@ class ArduinoSerialReader {
                 data.pumpStatus =
                   value === "1" || value.toLowerCase() === "true";
                 break;
+              case "EMERGENCY":
+              case "EMERGENCYMODE":
+                data.emergencyMode =
+                  value === "1" || value.toLowerCase() === "true";
+                break;
               case "TEMP":
               case "TEMPERATURE":
                 data.temperature = parseFloat(value);
@@ -151,7 +158,10 @@ class ArduinoSerialReader {
           data.waterLevel !== undefined &&
           data.pumpStatus !== undefined
         ) {
-          return data as ArduinoSensorData;
+          return {
+            ...data,
+            emergencyMode: data.emergencyMode || false
+          } as ArduinoSensorData;
         }
       }
     } catch (error) {
@@ -187,8 +197,8 @@ class ArduinoSerialReader {
       if (data.pumpStatus) {
         await storage.addSystemActivity({
           description: `Bomba de agua ${data.pumpStatus ? "activada" : "desactivada"} automáticamente`,
-          type: "system",
           details: `Humedad del suelo: ${data.soilMoisture}%`,
+          icon: "fas fa-tint",
         });
       }
 
@@ -240,6 +250,14 @@ class ArduinoSerialReader {
   async controlPump(state: boolean): Promise<void> {
     const command = state ? "PUMP_ON" : "PUMP_OFF";
     await this.sendCommand(command);
+  }
+
+  async emergencyStop(): Promise<void> {
+    await this.sendCommand("EMERGENCY_STOP");
+  }
+
+  async clearEmergency(): Promise<void> {
+    await this.sendCommand("CLEAR_EMERGENCY");
   }
 
   isConnectedToArduino(): boolean {

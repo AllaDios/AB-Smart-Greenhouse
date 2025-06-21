@@ -282,6 +282,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { duration = 5 } = req.body;
       
+      // If Arduino is connected, send command to physical device
+      if (isArduinoConnected && arduinoReader) {
+        try {
+          await arduinoReader.controlPump(true); // Turn on pump
+          console.log('[Irrigation] Sent PUMP_ON command to Arduino');
+        } catch (arduinoError) {
+          console.error('[Irrigation] Failed to send command to Arduino:', arduinoError);
+        }
+      }
+      
       // Update irrigation control
       const controls = await storage.getSystemControls();
       if (controls) {
@@ -291,22 +301,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add activity
       await storage.addSystemActivity({
         description: "Riego manual activado",
-        details: `Duración programada: ${duration} minutos`,
+        details: `Duración programada: ${duration} segundos`,
         icon: "fas fa-shower",
       });
       
-      // Simulate irrigation duration
+      // Simulate irrigation duration (convert minutes to seconds for testing)
       setTimeout(async () => {
+        // Turn off pump after duration
+        if (isArduinoConnected && arduinoReader) {
+          try {
+            await arduinoReader.controlPump(false); // Turn off pump
+            console.log('[Irrigation] Sent PUMP_OFF command to Arduino after duration');
+          } catch (arduinoError) {
+            console.error('[Irrigation] Failed to send OFF command to Arduino:', arduinoError);
+          }
+        }
+        
         const currentControls = await storage.getSystemControls();
         if (currentControls) {
           await storage.updateSystemControls({ ...currentControls, irrigation: false });
           broadcast({ type: 'system-controls', data: await storage.getSystemControls() });
         }
-      }, duration * 60 * 1000);
+      }, duration * 1000); // Use seconds instead of minutes * 60 * 1000
       
       broadcast({ type: 'system-controls', data: await storage.getSystemControls() });
       
-      res.json({ success: true, message: `Irrigation started for ${duration} minutes` });
+      res.json({ success: true, message: `Irrigation started for ${duration} seconds` });
     } catch (error) {
       res.status(500).json({ message: 'Failed to start irrigation' });
     }
@@ -321,6 +341,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         lighting: false,
         heating: false,
       });
+      
+      // If Arduino is connected, send emergency stop command to physical device
+      if (isArduinoConnected && arduinoReader) {
+        try {
+          await arduinoReader.emergencyStop(); // Send emergency stop command
+          console.log('[Emergency] Sent EMERGENCY_STOP command to Arduino');
+        } catch (arduinoError) {
+          console.error('[Emergency] Failed to send command to Arduino:', arduinoError);
+        }
+      }
       
       await storage.addSystemActivity({
         description: "Parada de emergencia activada",
@@ -340,6 +370,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, message: 'Emergency stop activated' });
     } catch (error) {
       res.status(500).json({ message: 'Failed to execute emergency stop' });
+    }
+  });
+
+  app.post('/api/actions/clear-emergency', async (req, res) => {
+    try {
+      // If Arduino is connected, send clear emergency command to physical device
+      if (isArduinoConnected && arduinoReader) {
+        try {
+          await arduinoReader.clearEmergency(); // Send clear emergency command
+          console.log('[Emergency] Sent CLEAR_EMERGENCY command to Arduino');
+        } catch (arduinoError) {
+          console.error('[Emergency] Failed to send command to Arduino:', arduinoError);
+        }
+      }
+      
+      await storage.addSystemActivity({
+        description: "Modo de emergencia limpiado",
+        details: "El sistema ha vuelto al modo normal de operación",
+        icon: "fas fa-play-circle",
+      });
+      
+      await storage.createSystemAlert({
+        title: "Modo de emergencia limpiado",
+        message: "El sistema ha vuelto al modo normal de operación. Todos los controles están disponibles.",
+        type: "info",
+        isRead: false,
+      });
+      
+      broadcast({ type: 'emergency-cleared', data: await storage.getSystemControls() });
+      
+      res.json({ success: true, message: 'Emergency mode cleared' });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to clear emergency mode' });
     }
   });
 
@@ -473,6 +536,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (conditions.soilMoisture && sensorData.soilMoisture < conditions.soilMoisture.min) {
           const controls = await storage.getSystemControls();
           if (controls && !controls.irrigation) {
+            // If Arduino is connected, send command to physical device
+            if (isArduinoConnected && arduinoReader) {
+              try {
+                await arduinoReader.controlPump(true); // Turn on pump
+                console.log('[Auto Irrigation] Sent PUMP_ON command to Arduino');
+              } catch (arduinoError) {
+                console.error('[Auto Irrigation] Failed to send command to Arduino:', arduinoError);
+              }
+            }
+            
             await storage.updateSystemControls({ ...controls, irrigation: true });
             
             await storage.addSystemActivity({
@@ -483,12 +556,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Auto-stop irrigation after schedule duration
             setTimeout(async () => {
+              // Turn off pump after duration
+              if (isArduinoConnected && arduinoReader) {
+                try {
+                  await arduinoReader.controlPump(false); // Turn off pump
+                  console.log('[Auto Irrigation] Sent PUMP_OFF command to Arduino after duration');
+                } catch (arduinoError) {
+                  console.error('[Auto Irrigation] Failed to send OFF command to Arduino:', arduinoError);
+                }
+              }
+              
               const currentControls = await storage.getSystemControls();
               if (currentControls && currentControls.irrigation) {
                 await storage.updateSystemControls({ ...currentControls, irrigation: false });
                 broadcast({ type: 'system-controls', data: await storage.getSystemControls() });
               }
-            }, automaticSchedule.duration * 60 * 1000);
+            }, automaticSchedule.duration * 1000);
             
             broadcast({ type: 'system-controls', data: await storage.getSystemControls() });
           }

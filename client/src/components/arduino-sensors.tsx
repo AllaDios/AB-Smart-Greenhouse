@@ -17,12 +17,12 @@ export function ArduinoSensors() {
   
   const { data: sensorData } = useQuery<ArduinoData>({
     queryKey: ['/api/sensor-data/latest'],
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 
   const { data: arduinoStatus } = useQuery<{ connected: boolean }>({
     queryKey: ['/api/arduino/status'],
-    refetchInterval: 10000,
+    refetchInterval: 20000,
   });
 
   const handlePumpControl = async (state: boolean) => {

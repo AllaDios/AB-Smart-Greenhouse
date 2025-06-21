@@ -48,7 +48,7 @@ export function IrrigationSchedule() {
     if (schedule.isAutomatic) {
       return "Activado automáticamente si humedad < 30%";
     }
-    return `${schedule.time} - ${schedule.duration} minutos`;
+    return `${schedule.time} - ${schedule.duration} segundos`;
   };
 
   if (isLoading) {

@@ -13,12 +13,12 @@ export function PumpControl() {
   
   const { data: sensorData } = useQuery<SensorData>({
     queryKey: ['/api/sensor-data/latest'],
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 
   const { data: arduinoStatus } = useQuery<{ connected: boolean }>({
     queryKey: ['/api/arduino/status'],
-    refetchInterval: 10000,
+    refetchInterval: 20000,
   });
 
   const pumpMutation = useMutation({
@@ -40,11 +40,6 @@ export function PumpControl() {
     }
   });
 
-  const handlePumpToggle = async () => {
-    setIsLoading(true);
-    pumpMutation.mutate(!pumpStatus);
-  };
-
   const getWaterLevelStatus = (level: number) => {
     if (level < 20) return { label: 'Crítico', color: 'destructive', icon: AlertTriangle };
     if (level < 50) return { label: 'Bajo', color: 'secondary', icon: Droplets };
@@ -63,6 +58,11 @@ export function PumpControl() {
   const pumpStatus = sensorData.pumpStatus || false;
   const waterStatus = getWaterLevelStatus(waterLevel);
   const StatusIcon = waterStatus.icon;
+
+  const handlePumpToggle = async () => {
+    setIsLoading(true);
+    pumpMutation.mutate(!pumpStatus);
+  };
 
   return (
     <Card>
@@ -100,17 +100,36 @@ export function PumpControl() {
         </div>
 
         {/* Tank Visual Indicator */}
-        <div className="flex justify-center">
-          <div className="relative">
-            <div className="w-16 h-20 border-2 border-gray-300 rounded-b-lg bg-gray-50">
-              <div 
-                className={`absolute bottom-0 w-full rounded-b-lg transition-all duration-300 ${getWaterLevelColor(waterLevel)}`}
-                style={{ height: `${Math.max(5, waterLevel)}%` }}
-              />
+        <div className="flex justify-center py-4">
+          <div className="relative w-24 h-32 border-4 border-gray-300 rounded-lg bg-gray-100 overflow-hidden">
+            {/* Water Wave Animation */}
+            <div
+              className="tank-wave"
+              style={{ height: `${waterLevel}%` }}
+            ></div>
+            
+            {/* Water Level Text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xl font-bold text-white drop-shadow-lg">
+                {waterLevel}%
+              </span>
             </div>
-            <div className="text-center mt-1 text-xs text-muted-foreground">
-              Tanque
-            </div>
+            
+            {/* Bubbles Animation */}
+            {waterLevel > 10 && (
+              <div className="absolute inset-0 overflow-hidden">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute bottom-0 w-1 h-1 bg-blue-200 rounded-full opacity-50"
+                    style={{
+                      left: `${Math.random() * 90 + 5}%`,
+                      animation: `bubble-rise 3s ease-in-out ${Math.random() * 3}s infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

@@ -40,6 +40,23 @@ export function Header() {
     }
   };
 
+  const handleClearEmergency = async () => {
+    try {
+      await apiRequest('POST', '/api/actions/clear-emergency');
+      toast({
+        title: "Modo de Emergencia Limpiado",
+        description: "El sistema ha vuelto al modo normal de operación.",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo limpiar el modo de emergencia.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const formatDateTime = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -85,6 +102,15 @@ export function Header() {
           >
             <i className="fas fa-stop-circle" />
             <span>Parada de Emergencia</span>
+          </Button>
+
+          {/* Clear Emergency */}
+          <Button
+            onClick={handleClearEmergency}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+          >
+            <i className="fas fa-play-circle" />
+            <span>Limpiar Emergencia</span>
           </Button>
         </div>
       </div>

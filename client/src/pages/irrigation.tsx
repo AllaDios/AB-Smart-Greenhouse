@@ -214,9 +214,9 @@ export default function Irrigation() {
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white mb-4"
                 >
                   <i className="fas fa-shower mr-2" />
-                  {irrigateNowMutation.isPending ? "Activando..." : "Riego Rápido (5 min)"}
+                  {irrigateNowMutation.isPending ? "Activando..." : "Riego Rápido (5 s)"}
                 </Button>
-                <p className="text-sm text-gray-500">Activación inmediata por 5 minutos</p>
+                <p className="text-sm text-gray-500">Activación inmediata por 5 segundos</p>
               </CardContent>
             </Card>
             
@@ -229,7 +229,7 @@ export default function Irrigation() {
                   className="w-full bg-green-500 hover:bg-green-600 text-white mb-4"
                 >
                   <i className="fas fa-clock mr-2" />
-                  Riego Normal (10 min)
+                  Riego Normal (10 s)
                 </Button>
                 <p className="text-sm text-gray-500">Ciclo estándar de riego</p>
               </CardContent>
@@ -244,7 +244,7 @@ export default function Irrigation() {
                   className="w-full bg-greenhouse-500 hover:bg-greenhouse-600 text-white mb-4"
                 >
                   <i className="fas fa-tint mr-2" />
-                  Riego Profundo (20 min)
+                  Riego Profundo (20 s)
                 </Button>
                 <p className="text-sm text-gray-500">Para suelos muy secos</p>
               </CardContent>
@@ -293,14 +293,14 @@ export default function Irrigation() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="duration">Duración (minutos)</Label>
+                        <Label htmlFor="duration">Duración (segundos)</Label>
                         <Input
                           id="duration"
                           type="number"
                           value={newSchedule.duration}
                           onChange={(e) => setNewSchedule(prev => ({ ...prev, duration: Number(e.target.value) }))}
                           min="1"
-                          max="60"
+                          max="300"
                         />
                       </div>
                       <div className="flex items-center space-x-2">
@@ -372,7 +372,7 @@ export default function Irrigation() {
                           <p className="text-sm text-gray-500">
                             {schedule.isAutomatic 
                               ? "Activación automática cuando humedad < 30%" 
-                              : `${schedule.time} - ${schedule.duration} minutos`}
+                              : `${schedule.time} - ${schedule.duration} segundos`}
                           </p>
                         </div>
                       </div>

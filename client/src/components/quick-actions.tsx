@@ -8,16 +8,16 @@ export function QuickActions() {
   const { toast } = useToast();
 
   const irrigateNowMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/actions/irrigate', { duration: 5 });
+    mutationFn: async (duration: number) => {
+      const response = await apiRequest('POST', '/api/actions/irrigate', { duration });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, duration) => {
       queryClient.invalidateQueries({ queryKey: ['/api/system-controls'] });
       queryClient.invalidateQueries({ queryKey: ['/api/system-activity'] });
       toast({
         title: "Riego iniciado",
-        description: "El sistema de riego se ha activado por 5 minutos.",
+        description: `El sistema de riego se ha activado por ${duration} segundos.`,
       });
     },
     onError: () => {
@@ -57,12 +57,12 @@ export function QuickActions() {
         <Button
           variant="outline"
           className="flex flex-col items-center justify-center p-4 h-auto hover:bg-gray-50 transition-colors"
-          onClick={() => irrigateNowMutation.mutate()}
+          onClick={() => irrigateNowMutation.mutate(10)}
           disabled={irrigateNowMutation.isPending}
         >
           <i className="fas fa-shower text-blue-500 text-xl mb-2" />
           <span className="text-sm font-medium text-gray-900">
-            {irrigateNowMutation.isPending ? "Iniciando..." : "Regar Ahora"}
+            {irrigateNowMutation.isPending ? "Iniciando..." : "Regar Ahora (10s)"}
           </span>
         </Button>
         

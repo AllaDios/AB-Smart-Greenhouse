@@ -4,86 +4,88 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
-  --muted-foreground: hsl(25, 5.3%, 44.7%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
-  --border: hsl(20, 5.9%, 90%);
-  --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(60, 4.8%, 95.9%);
-  --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(60, 4.8%, 95.9%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 0.5rem;
-  
-  /* Greenhouse color palette */
-  --greenhouse-50: hsl(122, 39%, 97%);
-  --greenhouse-100: hsl(122, 43%, 93%);
-  --greenhouse-200: hsl(122, 45%, 85%);
-  --greenhouse-300: hsl(122, 46%, 72%);
-  --greenhouse-400: hsl(122, 45%, 55%);
-  --greenhouse-500: hsl(122, 39%, 49%);
-  --greenhouse-600: hsl(122, 46%, 40%);
-  --greenhouse-700: hsl(122, 47%, 32%);
-  --greenhouse-800: hsl(122, 42%, 26%);
-  --greenhouse-900: hsl(122, 39%, 22%);
-  
-  /* Tech blue color palette */
-  --tech-blue-50: hsl(214, 100%, 97%);
-  --tech-blue-100: hsl(214, 95%, 93%);
-  --tech-blue-200: hsl(213, 97%, 87%);
-  --tech-blue-300: hsl(212, 96%, 78%);
-  --tech-blue-400: hsl(213, 94%, 68%);
-  --tech-blue-500: hsl(217, 91%, 60%);
-  --tech-blue-600: hsl(221, 83%, 53%);
-  --tech-blue-700: hsl(224, 76%, 48%);
-  --tech-blue-800: hsl(226, 71%, 40%);
-  --tech-blue-900: hsl(224, 64%, 33%);
-}
-
-.dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
-  --radius: 0.5rem;
-  
-  /* Greenhouse colors for dark mode */
-  --greenhouse-50: hsl(122, 39%, 7%);
-  --greenhouse-100: hsl(122, 43%, 12%);
-  --greenhouse-200: hsl(122, 45%, 18%);
-  --greenhouse-300: hsl(122, 46%, 25%);
-  --greenhouse-400: hsl(122, 45%, 35%);
-  --greenhouse-500: hsl(122, 39%, 49%);
-  --greenhouse-600: hsl(122, 46%, 55%);
-  --greenhouse-700: hsl(122, 47%, 65%);
-  --greenhouse-800: hsl(122, 42%, 75%);
-  --greenhouse-900: hsl(122, 39%, 85%);
+@layer base {
+  :root {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(20 14.3% 4.1%);
+    --muted: hsl(60 4.8% 95.9%);
+    --muted-foreground: hsl(25 5.3% 44.7%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(20 14.3% 4.1%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(20 14.3% 4.1%);
+    --border: hsl(20 5.9% 90%);
+    --input: hsl(20 5.9% 90%);
+    --primary: hsl(207 90% 54%);
+    --primary-foreground: hsl(211 100% 99%);
+    --secondary: hsl(60 4.8% 95.9%);
+    --secondary-foreground: hsl(24 9.8% 10%);
+    --accent: hsl(60 4.8% 95.9%);
+    --accent-foreground: hsl(24 9.8% 10%);
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(60 9.1% 97.8%);
+    --ring: hsl(20 14.3% 4.1%);
+    --radius: 0.5rem;
+    
+    /* Greenhouse color palette */
+    --greenhouse-50: hsl(122, 39%, 97%);
+    --greenhouse-100: hsl(122, 43%, 93%);
+    --greenhouse-200: hsl(122, 45%, 85%);
+    --greenhouse-300: hsl(122, 46%, 72%);
+    --greenhouse-400: hsl(122, 45%, 55%);
+    --greenhouse-500: hsl(122, 39%, 49%);
+    --greenhouse-600: hsl(122, 46%, 40%);
+    --greenhouse-700: hsl(122, 47%, 32%);
+    --greenhouse-800: hsl(122, 42%, 26%);
+    --greenhouse-900: hsl(122, 39%, 22%);
+    
+    /* Tech blue color palette */
+    --tech-blue-50: hsl(214, 100%, 97%);
+    --tech-blue-100: hsl(214, 95%, 93%);
+    --tech-blue-200: hsl(213, 97%, 87%);
+    --tech-blue-300: hsl(212, 96%, 78%);
+    --tech-blue-400: hsl(213, 94%, 68%);
+    --tech-blue-500: hsl(217, 91%, 60%);
+    --tech-blue-600: hsl(221, 83%, 53%);
+    --tech-blue-700: hsl(224, 76%, 48%);
+    --tech-blue-800: hsl(226, 71%, 40%);
+    --tech-blue-900: hsl(224, 64%, 33%);
+  }
+ 
+  .dark {
+    --background: hsl(240 10% 3.9%);
+    --foreground: hsl(0 0% 98%);
+    --muted: hsl(240 3.7% 15.9%);
+    --muted-foreground: hsl(240 5% 64.9%);
+    --popover: hsl(240 10% 3.9%);
+    --popover-foreground: hsl(0 0% 98%);
+    --card: hsl(240 10% 3.9%);
+    --card-foreground: hsl(0 0% 98%);
+    --border: hsl(240 3.7% 15.9%);
+    --input: hsl(240 3.7% 15.9%);
+    --primary: hsl(207 90% 54%);
+    --primary-foreground: hsl(211 100% 99%);
+    --secondary: hsl(240 3.7% 15.9%);
+    --secondary-foreground: hsl(0 0% 98%);
+    --accent: hsl(240 3.7% 15.9%);
+    --accent-foreground: hsl(0 0% 98%);
+    --destructive: hsl(0 62.8% 30.6%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --ring: hsl(240 4.9% 83.9%);
+    --radius: 0.5rem;
+    
+    /* Greenhouse colors for dark mode */
+    --greenhouse-50: hsl(122, 39%, 7%);
+    --greenhouse-100: hsl(122, 43%, 12%);
+    --greenhouse-200: hsl(122, 45%, 18%);
+    --greenhouse-300: hsl(122, 46%, 25%);
+    --greenhouse-400: hsl(122, 45%, 35%);
+    --greenhouse-500: hsl(122, 39%, 49%);
+    --greenhouse-600: hsl(122, 46%, 55%);
+    --greenhouse-700: hsl(122, 47%, 65%);
+    --greenhouse-800: hsl(122, 42%, 75%);
+    --greenhouse-900: hsl(122, 39%, 85%);
+  }
 }
 
 @layer base {
@@ -177,4 +179,54 @@
 .recharts-tooltip-wrapper {
   border-radius: calc(var(--radius) - 2px);
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Animación de oleaje para el tanque de agua */
+.tank-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0 0 0.375rem 0.375rem; /* rounded-b-lg */
+}
+
+.tank-wave::before,
+.tank-wave::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  top: 0;
+  border-radius: 45%;
+  background: rgba(96, 165, 250, 0.6); /* bg-blue-400 with opacity */
+  animation: wave-animation 7s linear infinite;
+}
+
+.tank-wave::after {
+  top: 5%;
+  border-radius: 40%;
+  background: rgba(59, 130, 246, 0.7); /* bg-blue-500 with opacity */
+  animation: wave-animation 10s linear infinite;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
 }
