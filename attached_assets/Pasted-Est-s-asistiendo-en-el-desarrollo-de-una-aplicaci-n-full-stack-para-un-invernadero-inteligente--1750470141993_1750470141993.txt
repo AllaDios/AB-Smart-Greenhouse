@@ -1,0 +1,43 @@
+Estás asistiendo en el desarrollo de una aplicación full-stack para un invernadero inteligente.
+
+🟢 CONTEXTO GENERAL:
+El proyecto utiliza sensores físicos conectados a un Arduino. La aplicación debe mostrar métricas en tiempo real y permitir controlar dispositivos conectados.
+
+🟡 DISPOSITIVOS FÍSICOS CONECTADOS:
+- Sensor de luz
+- Sensor de nivel de agua del tanque
+- Sensor de humedad del suelo
+- Bomba de agua
+
+Estos dispositivos están conectados a un Arduino, el cual transmite datos por puerto serie a un backend Node.js en tiempo real.
+
+🔵 OBJETIVOS DEL SISTEMA:
+- Leer datos desde Arduino a través de `SerialPort` y emitirlos al frontend por WebSocket.
+- Mostrar los datos en la interfaz React (con componentes propios en `/components/`).
+- Permitir activar la bomba de agua desde la UI, enviando comandos al Arduino desde el backend.
+- Consultar temperatura y humedad ambiente desde una API externa (como OpenWeatherMap).
+
+🟣 TECNOLOGÍAS USADAS:
+- Frontend: React + Vite + TailwindCSS + WebSockets
+- Backend: Node.js + SerialPort + API externa
+- Organización del frontend: estructura modular con componentes en `/client/src/components/`, hooks en `/hooks/`, páginas en `/pages/`.
+
+🔶 ESTILO DE CÓDIGO ESPERADO:
+- Usa TypeScript tanto en frontend como backend
+- Los componentes deben estar en formato funcional (React FC)
+- Aplicá clases de Tailwind para el estilo
+- Reutilizá componentes existentes cuando sea posible (`metric-card`, `quick-actions`, etc.)
+
+🔺 TAREAS QUE PODÉS AYUDARME A HACER:
+- Crear componentes React que muestren valores de sensores
+- Escribir hooks personalizados para usar WebSocket
+- Programar el backend para recibir datos del Arduino (puerto serie) y enviarlos al frontend
+- Crear rutas para controlar la bomba
+- Consultar clima real desde una API externa
+- Refactorizar o documentar código existente
+
+🔻 FORMATO DE RESPUESTA ESPERADO:
+- Código completo listo para pegar, en bloques con explicaciones breves si es necesario
+- No generes archivos innecesarios
+- Apegate a la estructura del proyecto existente
+
