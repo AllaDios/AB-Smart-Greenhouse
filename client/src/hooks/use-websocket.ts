@@ -11,6 +11,11 @@ export function useWebSocket() {
 
   useEffect(() => {
     const connect = () => {
+      // Clean up existing connection
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      
       try {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const wsUrl = `${protocol}//${window.location.host}/ws`;
@@ -80,17 +85,21 @@ export function useWebSocket() {
           }
         };
 
-        wsRef.current.onclose = () => {
+        wsRef.current.onclose = (event) => {
           console.log("WebSocket disconnected");
-          // Attempt to reconnect after 3 seconds
-          reconnectTimeoutRef.current = setTimeout(() => {
-            console.log("Attempting to reconnect WebSocket...");
-            connect();
-          }, 3000);
+          if (!event.wasClean) {
+            // Only reconnect if connection was not cleanly closed
+            reconnectTimeoutRef.current = setTimeout(() => {
+              connect();
+            }, 5000);
+          }
         };
 
-        wsRef.current.onerror = (error) => {
-          console.error("WebSocket error:", error);
+        wsRef.current.onerror = () => {
+          // Silent error handling to prevent console spam
+          if (wsRef.current?.readyState === WebSocket.CONNECTING) {
+            wsRef.current.close();
+          }
         };
       } catch (error) {
         console.error("Failed to create WebSocket connection:", error);
