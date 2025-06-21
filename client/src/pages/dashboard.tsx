@@ -9,7 +9,7 @@ import { RecentActivity } from "@/components/recent-activity";
 import { ArduinoStatus } from "@/components/arduino-status";
 import { QuickActions } from "@/components/quick-actions";
 import { WeatherCard } from "@/components/weather-card";
-import { ArduinoSensors } from "@/components/arduino-sensors";
+import { PumpControl } from "@/components/pump-control";
 import { useQuery } from "@tanstack/react-query";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,10 +54,44 @@ export default function Dashboard() {
         <Header />
         
         <div className="p-6 space-y-6">
-          {/* Arduino Sensors - Physical Components */}
-          <ArduinoSensors />
-          
-
+          {/* Weather Information Card - Takes 2 grid spaces */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-2">
+              <WeatherCard />
+            </div>
+            
+            {/* Light and Soil Moisture - Each takes 1 grid space */}
+            <MetricCard
+              title="Luz Solar"
+              value={`${sensorData?.lightLevel || '--'} lux`}
+              trend={sensorData ? `${sensorData.lightLevel > 400 ? '+' : ''}${(sensorData.lightLevel - 400).toFixed(0)} lux desde ayer` : '--'}
+              trendUp={sensorData ? sensorData.lightLevel > 400 : false}
+              icon="fas fa-sun"
+              iconColor="text-yellow-500"
+              iconBg="bg-yellow-100"
+              percentage={sensorData ? Math.min(100, (sensorData.lightLevel / 1000) * 100) : 0}
+              gradientColors="from-gray-400 to-yellow-400"
+              optimalRange="400-800 lux"
+              minLabel="0 lux"
+              maxLabel="1000 lux"
+            />
+            
+            <MetricCard
+              title="Humedad del Suelo"
+              value={`${sensorData?.soilMoisture || '--'}%`}
+              trend={sensorData && sensorData.soilMoisture < 50 ? "Nivel bajo" : "Nivel óptimo"}
+              trendUp={sensorData ? sensorData.soilMoisture >= 50 : false}
+              icon="fas fa-seedling"
+              iconColor="text-green-500"
+              iconBg="bg-green-100"
+              percentage={sensorData?.soilMoisture || 0}
+              gradientColors="from-red-400 to-green-400"
+              optimalRange="50-70%"
+              minLabel="0%"
+              maxLabel="100%"
+              isWarning={sensorData ? sensorData.soilMoisture < 50 : false}
+            />
+          </div>
 
           {/* Charts and Controls Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -68,7 +102,7 @@ export default function Dashboard() {
             
             <div className="space-y-6">
               <ArduinoStatus />
-              <WeatherCard />
+              <PumpControl />
               <ControlPanel />
               <SystemAlerts />
               <QuickActions />

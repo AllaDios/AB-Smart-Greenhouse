@@ -8,15 +8,12 @@ export function Sidebar() {
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: "fas fa-tachometer-alt", current: location === "/" },
-    { name: "Temperatura", href: "/temperature", icon: "fas fa-thermometer-half", current: false },
-    { name: "Humedad", href: "/humidity", icon: "fas fa-tint", current: false },
-    { name: "Iluminación", href: "/lighting", icon: "fas fa-sun", current: false },
   ];
 
   const controlNavigation = [
-    { name: "Riego", href: "/irrigation", icon: "fas fa-shower", current: false },
-    { name: "Ventilación", href: "/ventilation", icon: "fas fa-fan", current: false },
-    { name: "Configuración", href: "/config", icon: "fas fa-cog", current: false },
+    { name: "Riego", href: "/irrigation", icon: "fas fa-shower", current: location === "/irrigation" },
+    { name: "Ventilación", href: "/ventilation", icon: "fas fa-fan", current: location === "/ventilation" },
+    { name: "Configuración", href: "/configuration", icon: "fas fa-cog", current: location === "/configuration" },
   ];
 
   const systemNavigation = [

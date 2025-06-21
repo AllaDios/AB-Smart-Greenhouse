@@ -70,44 +70,64 @@ export function WeatherCard() {
 
   const WeatherIcon = getWeatherIcon(weather.weatherCode);
 
+  const currentDate = new Date().toLocaleDateString('es-AR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Clima Exterior</CardTitle>
-        <WeatherIcon className="h-4 w-4 text-muted-foreground" />
+    <Card className="h-full">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-bold">Clima Ambiental</CardTitle>
+            <p className="text-sm text-muted-foreground">{weather.location}</p>
+          </div>
+          <WeatherIcon className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <p className="text-xs text-muted-foreground capitalize">{currentDate}</p>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+      
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-blue-600">{weather.temperature}°C</div>
+            <p className="text-xs text-muted-foreground">Temperatura</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="text-3xl font-bold text-cyan-600">{weather.humidity}%</div>
+            <p className="text-xs text-muted-foreground">Humedad</p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <div>
-              <div className="text-2xl font-bold">{weather.temperature}°C</div>
-              <p className="text-xs text-muted-foreground">{weather.location}</p>
+            <div className="flex items-center gap-2">
+              <Wind className="h-4 w-4 text-gray-500" />
+              <span className="text-sm">Viento:</span>
+            </div>
+            <span className="font-medium">{weather.windSpeed} km/h</span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Cloud className="h-4 w-4 text-gray-500" />
+              <span className="text-sm">Condición:</span>
             </div>
             <Badge variant="outline" className="text-xs">
               {getWeatherDescription(weather.weatherCode)}
             </Badge>
           </div>
-          
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="flex items-center gap-1">
-              <Droplets className="h-3 w-3 text-blue-500" />
-              <span className="text-xs text-muted-foreground">Humedad:</span>
-              <span className="font-medium">{weather.humidity}%</span>
-            </div>
-            
-            <div className="flex items-center gap-1">
-              <Wind className="h-3 w-3 text-gray-500" />
-              <span className="text-xs text-muted-foreground">Viento:</span>
-              <span className="font-medium">{weather.windSpeed} km/h</span>
-            </div>
-          </div>
+        </div>
 
-          <div className="text-xs text-muted-foreground border-t pt-2">
-            Actualizado: {new Date(weather.timestamp).toLocaleTimeString('es-AR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </div>
+        <div className="text-xs text-muted-foreground text-center border-t pt-2">
+          Actualizado: {new Date(weather.timestamp).toLocaleTimeString('es-AR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          })}
         </div>
       </CardContent>
     </Card>

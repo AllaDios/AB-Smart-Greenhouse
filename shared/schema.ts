@@ -8,6 +8,8 @@ export const sensorData = pgTable("sensor_data", {
   humidity: real("humidity").notNull(),
   lightLevel: real("light_level").notNull(),
   soilMoisture: real("soil_moisture").notNull(),
+  waterLevel: real("water_level").default(75),
+  pumpStatus: boolean("pump_status").default(false),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
 

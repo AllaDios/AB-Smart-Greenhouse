@@ -94,6 +94,8 @@ export class MemStorage implements IStorage {
         humidity: Math.round(60 + Math.random() * 20),
         lightLevel: Math.round(i > 6 && i < 19 ? 400 + Math.random() * 600 : Math.random() * 100),
         soilMoisture: Math.round(40 + Math.random() * 30),
+        waterLevel: Math.round(50 + Math.random() * 40),
+        pumpStatus: false,
         timestamp,
       };
       this.sensorDataStore.set(sensorReading.id, sensorReading);
@@ -209,6 +211,8 @@ export class MemStorage implements IStorage {
       humidity: Math.round(data.humidity),
       lightLevel: Math.round(data.lightLevel),
       soilMoisture: Math.round(data.soilMoisture),
+      waterLevel: data.waterLevel ? Math.round(data.waterLevel) : 75,
+      pumpStatus: data.pumpStatus || false,
       timestamp: new Date(),
     };
     this.sensorDataStore.set(id, sensorReading);
